@@ -2,16 +2,25 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [data, setData] = useState([
-    { id: 1, name: "Nurbek" },
-    { id: 2, name: "Sanjar" },
-    { id: 3, name: "Temur" },
-    { id: 4, name: "Ali" },
-  ]);
+  const memory = localStorage.getItem("data");
+
+  const [data, setData] = useState(
+    memory
+      ? JSON.parse(memory)
+      : [
+          { id: 1, status: "mentor", name: "Nurbek" },
+          { id: 2, status: "reader", name: "Sanjar" },
+          { id: 3, status: "teacher", name: "Temur" },
+          { id: 4, status: "mentor", name: "Ali" },
+        ]
+  );
+
+  localStorage.setItem("data", JSON.stringify(data));
 
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
   const [select, setSelect] = useState(null);
+  const [key, setKey] = useState("name");
 
   const getDelete = (id) => {
     const newArr = data.filter((val) => val.id !== id);
@@ -36,8 +45,35 @@ function App() {
     setData(newArraying);
     setSelect(null);
   };
+
+  const getClear = () => {
+    localStorage.clear();
+  };
+
+  const getSearch = (e) => {
+    const newInfo = data.filter((val) =>
+      val[key].toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setData(newInfo);
+
+    if (e.target.value === "") {
+      setData([
+        { id: 1, status: "mentor", name: "Nurbek" },
+        { id: 2, status: "reader", name: "Sanjar" },
+        { id: 3, status: "teacher", name: "Temur" },
+        { id: 4, status: "mentor", name: "Ali" },
+      ]);
+    }
+  };
+  console.log(key);
+
   return (
     <div className="App">
+      <input type="text" onChange={getSearch} />
+      <select onChange={(e) => setKey(e.target.value)}>
+        <option value="name">name</option>
+        <option value="status">status</option>
+      </select>
       <input
         type="text"
         placeholder="Add "
@@ -68,6 +104,7 @@ function App() {
                     value.name
                   )}
                 </td>
+                <td>{value.status}</td>
                 <td>
                   <button onClick={() => getDelete(value.id)}>delete</button>
                   {select === value.id ? (
@@ -81,6 +118,8 @@ function App() {
           })}
         </tbody>
       </table>
+      <button onClick={getClear}>clear</button>
+      
     </div>
   );
 }
