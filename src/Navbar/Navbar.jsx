@@ -11,7 +11,7 @@ const Navbar = () => {
         <Item rang="qizil">Home</Item>
         <Item>Contact</Item>
         <Item>Movies</Item> 
-        <Item>Discount</Item>
+        <Item>Discounts</Item>
         <Item rang="sariq">{mock.length}</Item>
       </NavItems>
     </Container>
